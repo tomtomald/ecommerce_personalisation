@@ -1,2 +1,0 @@
-document.addEventListener("DOMContentLoaded",(function(){const t=window.location.pathname;console.log(DOMAIN_URL),t.startsWith("/generate-products/")&&console.log("test page")}));
-//# sourceMappingURL=main.js.map

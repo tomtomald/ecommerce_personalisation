@@ -1,4 +1,7 @@
 const path = require('path');
+const webpack = require('webpack');
+const packageJson = require('./package.json');
+
 module.exports = {
   entry: './src/index.js',
   module: {
@@ -14,7 +17,7 @@ module.exports = {
     extensions: ['.tsx', '.ts', '.js']
   },
   output: {
-    filename: '[name].js',
+    filename: `bundle.${packageJson.version}.js`,
     path: path.resolve(__dirname, 'public')
   }
 };
