@@ -8,7 +8,10 @@ function transformFormData(formData) {
 
     const image_wrapper = document.getElementById('image_wrapper');
     const starter_wrapper = document.querySelector('.starter-description');
-    starter_wrapper.remove();
+    if(starter_wrapper) {
+        starter_wrapper.remove();
+    }
+    
     addLoader(image_wrapper);
     
     const transformedData = {
@@ -64,9 +67,7 @@ function responseHandler (response) {
 
 function addLoader(parentElement) {
     const html = `<div class="skeleton-loader"></div>`
-
     return parentElement.insertAdjacentHTML("beforeend", html);
-    
 }
 
 function removeLoader (parentElement) {
@@ -80,29 +81,3 @@ function removeLoader (parentElement) {
     });
 
 }
-
-// const inputData = {
-//     form: $w("#form").value,
-//     sole: $w("#sole").value,
-//     bodyMaterial: $w("#bodyMaterial").value,
-//     bodyPattern: $w("#bodyPattern").value,
-//     laces: $w("#laces").value,
-//     generalstyle: $w("#generalstyle").value
-//   };
-
-//   fetch("https://us-central1-quiet-amp-415709.cloudfunctions.net/genai_for_product_design_1", {
-//     method: "POST",
-//     headers: {
-//       "Content-Type": "application/json"
-//     },
-//     body: JSON.stringify(inputData)
-//   })
-//   .then(response => response.json())
-//   .then(data => {
-//     console.log("Success:", data);
-//     // Display the image
-//     $w("#image1").src = data.image_url; // This line needs to be adjusted
-//   })
-//   .catch((error) => {
-//     console.error('Error:', error);
-//   });
