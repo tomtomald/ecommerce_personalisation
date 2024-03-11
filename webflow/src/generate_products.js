@@ -1,18 +1,12 @@
-import { setupForm } from "./utils"
+import { checkCallLimit, incrementCallCount, setupForm, updateErrorMessage, updateSuccessMessage } from "./utils"
 
 export function render(){
     setupForm('wf-form-Generate-Product-Form',transformFormData,submitFormData,responseHandler);
 }
 
 function transformFormData(formData) {
-
-    const image_wrapper = document.getElementById('image_wrapper');
-    const starter_wrapper = document.querySelector('.starter-description');
-    if(starter_wrapper) {
-        starter_wrapper.remove();
-    }
     
-    addLoader(image_wrapper);
+    //addLoader(image_wrapper);
     
     const transformedData = {
         form: formData.get('product_shape'),
@@ -30,16 +24,41 @@ async function submitFormData (formData) {
     // Assuming `formData` is your FormData object
     console.log(formData)
 
-    // Send the POST request to the server
-    const response = await fetch(`https://us-central1-quiet-amp-415709.cloudfunctions.net/genai_for_product_design_1`, {
-        method: 'POST',
-        body: JSON.stringify(formData),
-        headers: {
-            "Content-Type": "application/json"
-        }
-    });
+    //hide/show starter description and result component
+    const starterDescription = document.querySelector('.starter-description');
+    const resultsComponent = document.querySelector('.results_components');
 
-    const data = await response.json()
+    // increment call count for the user
+    incrementCallCount();
+    
+    // check call limit for user
+    const remainingCalls = checkCallLimit();
+
+    if (remainingCalls > 0) {
+
+        // Check if the element has a class named 'myClass'
+        if (resultsComponent.classList.contains('hide')) {
+            starterDescription.classList.add('hide');
+            resultsComponent.classList.remove('hide');
+        }
+
+        updateSuccessMessage('.success-message',`Please wait around 30 seconds for your sneaker image to be generated. You have ${remainingCalls} generation attempt(s) left.`)
+    } else {
+        return {success:false, data:"no remaining calls"}
+    }
+
+    // Send the POST request to the server
+    // const response = await fetch(`https://us-central1-quiet-amp-415709.cloudfunctions.net/genai_for_product_design_1`, {
+    //     method: 'POST',
+    //     body: JSON.stringify(formData),
+    //     headers: {
+    //         "Content-Type": "application/json"
+    //     }
+    // });
+
+    // const data = await response.json()
+
+    return {success:true,data: 'test'}
 
     if (response.ok)
   
@@ -51,17 +70,21 @@ async function submitFormData (formData) {
 }
 
 function responseHandler (response) {
+
     if (response.success) {
         console.log('success!');
         console.log(response);
-        const image = document.getElementById('generated_image');
-        image.src = response.data.image_url;
+        // const image = document.getElementById('generated_image');
+        // image.src = response.data.image_url;
 
-        const image_wrapper = document.getElementById('image_wrapper');
+        // const image_wrapper = document.getElementById('image_wrapper');
 
-        removeLoader(image_wrapper);
-    } else {
-        console.log('failed!');
+        //removeLoader(image_wrapper);
+    } else if (!response.success && response.data === "no remaining calls"){
+        updateErrorMessage('.error-message','You have reached the maximum number of sneaker image generations allowed (3). Please try again in 12h.')
+    }
+        else {
+        updateErrorMessage('.error-message','Something went wrong.')
     }
 }
 
