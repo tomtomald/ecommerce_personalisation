@@ -6,7 +6,7 @@ function initApp() {
   console.log("init app");
   
   // Handle authentication and user display for app routes
-  if (path.startsWith('/generate-products')) {
+  if (path.startsWith('/generate-products') || path.startsWith('/find-products')) {
     import('../src/generate_products.js').then(module => module.render())
   }
 }

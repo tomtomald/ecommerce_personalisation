@@ -2,11 +2,17 @@ import { checkCallLimit, incrementCallCount, setupForm, updateErrorMessage, upda
 
 export function render(){
     setupForm('wf-form-Generate-Product-Form',transformFormData,submitFormData,responseHandler);
+
+    document.getElementById('product_shape').value = 'Sneaker';
+    document.getElementById('product_sole').value = 'Red';
+    document.getElementById('product_material').value = 'Leather';
+    document.getElementById('product_pattern').value = 'Snake Skin';
+    document.getElementById('product_laces').value = 'Red';
+    document.getElementById('product_gender').value = 'Green and Red snake skin sneaker';
+
 }
 
 function transformFormData(formData) {
-    
-    //addLoader(image_wrapper);
     
     const transformedData = {
         form: formData.get('product_shape'),
@@ -42,23 +48,36 @@ async function submitFormData (formData) {
             resultsComponent.classList.remove('hide');
         }
 
+        const loaderItems = []
+        const resultItems = document.querySelectorAll('.result-item');
+        const genAIresult = document.querySelector('.results_generated-image-wrapper');
+        resultItems.forEach(item => {
+            loaderItems.push(item);
+        });
+        if (genAIresult) {
+            loaderItems.push(genAIresult);
+        }
+        loaderItems.forEach(item => {
+            addLoader(item);
+        });
+
         updateSuccessMessage('.success-message',`Please wait around 30 seconds for your sneaker image to be generated. You have ${remainingCalls} generation attempt(s) left.`)
     } else {
         return {success:false, data:"no remaining calls"}
     }
 
     // Send the POST request to the server
-    // const response = await fetch(`https://us-central1-quiet-amp-415709.cloudfunctions.net/genai_for_product_design_1`, {
-    //     method: 'POST',
-    //     body: JSON.stringify(formData),
-    //     headers: {
-    //         "Content-Type": "application/json"
-    //     }
-    // });
+    const response = await fetch(`https://us-central1-quiet-amp-415709.cloudfunctions.net/genai_for_product_design_1`, {
+        method: 'POST',
+        body: JSON.stringify(formData),
+        headers: {
+            "Content-Type": "application/json"
+        }
+    });
 
-    // const data = await response.json()
+    const data = await response.json()
 
-    return {success:true,data: 'test'}
+    // return {success:true,data: 'test'}
 
     if (response.ok)
   
@@ -72,14 +91,121 @@ async function submitFormData (formData) {
 function responseHandler (response) {
 
     if (response.success) {
-        console.log('success!');
-        console.log(response);
-        // const image = document.getElementById('generated_image');
-        // image.src = response.data.image_url;
 
-        // const image_wrapper = document.getElementById('image_wrapper');
+        const response_data = response.data;
 
-        //removeLoader(image_wrapper);
+        // Update img elements
+        response_data.similar_images.forEach((item, index) => {
+            const imageElement = document.getElementById(`result-image-${index + 1}`);
+            if (imageElement) { // Check if the img element exists
+                imageElement.src = item.image_name;
+                imageElement.srcset = item.image_name;
+            }
+        });
+
+        // Handling the special case for 'result-image-genai'
+        const result_image_genai = document.getElementById('result-image-genai');
+        if (result_image_genai) {
+            result_image_genai.src = response_data.dalle_image_url;
+            result_image_genai.srcset = response_data.dalle_image_url;
+        }
+
+        const imageIds = ['result-image-genai','result-image-1', 'result-image-2', 'result-image-3'];
+        // Array to store image URLs
+
+        let lighboxImageSrc = [];
+        lighboxImageSrc = imageIds.map(id => {
+            const imageElement = document.getElementById(id);
+            if (imageElement) {
+                return imageElement.src;
+            }
+        });
+
+        // Select the lightbox container and ensure it's initially hidden
+        const lightboxContainer = document.querySelector('.lightbox_modal');
+
+        // Function to show the lightbox
+        const showLightbox = () => {
+            lightboxContainer.style.display = 'flex';
+        };
+
+        // Assuming you have a swiper-wrapper class in your HTML structure
+        const swiperWrapper = document.querySelector('.swiper-wrapper');
+
+        while(swiperWrapper.firstChild){
+            swiperWrapper.removeChild(swiperWrapper.firstChild);
+        }
+            
+        lighboxImageSrc.forEach((imgSrc) => {
+            const slide = document.createElement("div");
+            slide.classList.add("swiper-slide");
+
+            const slideImg = document.createElement("img");
+            slideImg.setAttribute("src", imgSrc);
+            slideImg.setAttribute("width", "auto");
+            slideImg.setAttribute("height", "auto");
+            slide.classList.add("thumbnail-small");
+
+            slide.appendChild(slideImg);
+            swiperWrapper.appendChild(slide);
+        });
+
+        const mySwiper = new Swiper('[lightbox="swiper"]', {
+            slidesPerView: 1,
+            spaceBetween: 30,
+            centeredSlides: true,
+            navigation: {
+                nextEl: `.swiper-button-next`,
+                prevEl: `.swiper-button-prev`,
+            },
+            pagination: {
+                el: `.swiper-pagination`,
+                type: 'bullets',
+                clickable: true,
+                renderBullet: function (index, className) {
+                    return `<span class="${className}" style="background-image: url('${lighboxImageSrc[index]}'); background-size: cover; background-position: center; width: 3rem; height: 3rem;"></span>`;
+                },
+            },
+        });
+
+        // Add keyboard navigation
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'ArrowLeft') {
+            mySwiper.slidePrev();
+            } else if (event.key === 'ArrowRight') {
+            mySwiper.slideNext();
+            }
+        });
+    
+        // Select all triggers - assuming the triggers are the images themselves for simplicity
+        const lightboxTriggers = imageIds.map(id => {
+            const imageElement = document.getElementById(id);
+            if (imageElement) {
+                return imageElement;
+            }
+        });
+    
+        lightboxTriggers.forEach((trigger, index) => {
+            if(trigger){
+                trigger.addEventListener("click", () => {
+                    showLightbox(); // Show the lightbox on any trigger click
+                });
+            }
+        });
+
+        const loaderItems = []
+        const resultItems = document.querySelectorAll('.result-item');
+        const genAIresult = document.querySelector('.results_generated-image-wrapper');
+        resultItems.forEach(item => {
+            loaderItems.push(item);
+        });
+        if (genAIresult){
+            loaderItems.push(genAIresult);
+        }
+        loaderItems.forEach(item => {
+            removeLoader(item);
+        });
+
     } else if (!response.success && response.data === "no remaining calls"){
         updateErrorMessage('.error-message','You have reached the maximum number of sneaker image generations allowed (3). Please try again in 12h.')
     }
