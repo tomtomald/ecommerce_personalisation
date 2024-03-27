@@ -28,7 +28,6 @@ function transformFormData(formData) {
 
 async function submitFormData (formData) {
     // Assuming `formData` is your FormData object
-    console.log(formData)
 
     //hide/show starter description and result component
     const starterDescription = document.querySelector('.starter-description');

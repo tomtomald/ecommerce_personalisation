@@ -3,7 +3,7 @@ function initApp() {
   //displayLoader();
   const path = window.location.pathname;
 
-  console.log("init app");
+  console.log("Hello World!");
   
   // Handle authentication and user display for app routes
   if (path.startsWith('/generate-products') || path.startsWith('/find-products')) {
