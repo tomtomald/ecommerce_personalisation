@@ -3,12 +3,12 @@ import { checkCallLimit, incrementCallCount, setupForm, updateErrorMessage, upda
 export function render(){
     setupForm('wf-form-Generate-Product-Form',transformFormData,submitFormData,responseHandler);
 
-    document.getElementById('product_shape').value = 'Sneaker';
-    document.getElementById('product_sole').value = 'Red';
-    document.getElementById('product_material').value = 'Leather';
-    document.getElementById('product_pattern').value = 'Snake Skin';
-    document.getElementById('product_laces').value = 'Red';
-    document.getElementById('product_gender').value = 'Green and Red snake skin sneaker';
+    document.getElementById('product_shape').value = '';
+    document.getElementById('product_sole').value = '';
+    document.getElementById('product_material').value = '';
+    document.getElementById('product_pattern').value = '';
+    document.getElementById('product_laces').value = '';
+    document.getElementById('product_gender').value = '';
 
 }
 
@@ -60,7 +60,7 @@ async function submitFormData (formData) {
             addLoader(item);
         });
 
-        updateSuccessMessage('.success-message',`Please wait around 30 seconds for your sneaker image to be generated. You have ${remainingCalls} generation attempt(s) left.`)
+        updateSuccessMessage('.success-message',`Please wait around 60 seconds for your sneaker image matches to be generated. You have ${remainingCalls} generation attempt(s) left.`)
     } else {
         return {success:false, data:"no remaining calls"}
     }
