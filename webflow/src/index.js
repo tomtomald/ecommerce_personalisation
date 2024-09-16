@@ -8,7 +8,7 @@ function initApp() {
     import('../src/generate_products.js').then(module => module.render())
   }
 
-  else if (path.startsWith('/customised-ai-design') || path.startsWith('/peer-inspired-design') || path.startsWith('/sequential-process-ai') || path.startsWith('/sequential-process-pure') || path.startsWith('/pure-recommendation')) {
+  else if (path.startsWith('/customised-ai-design') || path.startsWith('/peer-inspired-design') || path.startsWith('/sequential-process-ai') || path.startsWith('/sequential-process-pure') || path.startsWith('/pure-recommendation') || path.startsWith('/sequential-process-pure-low') || path.startsWith('/sequential-process-ai-low')) {
     import('../src/generate_products_updated.js').then(module => module.render())
   }
 }
