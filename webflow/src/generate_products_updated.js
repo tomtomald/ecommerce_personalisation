@@ -69,7 +69,7 @@ async function submitFormData (formData) {
 
     // Send the POST request to the server
     
-    const response = await fetch(`https://us-central1-quiet-amp-415709.cloudfunctions.net/genai_for_product_design_1-1`, {
+    const response = await fetch(`https://us-central1-quiet-amp-415709.cloudfunctions.net/genai_for_product_design_study2`, {
         method: 'POST',
         body: JSON.stringify(formData),
         headers: {
