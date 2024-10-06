@@ -5,16 +5,16 @@ function initApp() {
 
   // Handle different frontend websites with the appropriate script imports
   if (path.startsWith('/study-ai-good-match-good')) {
-    import('../src/generate_products_updated_AI_good_Match_good.js').then(module => module.render())
+    import('../src/generate_products_AI_good_Match_good.js').then(module => module.render())
   } 
   else if (path.startsWith('/study-ai-bad-match-good')) {
-    import('../src/generate_products_updated_AI_bad_Match_good.js').then(module => module.render())
+    import('../src/generate_products_AI_bad_Match_good.js').then(module => module.render())
   } 
   else if (path.startsWith('/study-ai-good-match-bad')) {
-    import('../src/generate_products_updated_AI_good_Match_bad.js').then(module => module.render())
+    import('../src/generate_products_AI_good_Match_bad.js').then(module => module.render())
   } 
   else if (path.startsWith('/study-ai-bad-match-bad')) {
-    import('../src/generate_products_updated_AI_bad_Match_bad.js').then(module => module.render())
+    import('../src/generate_products_AI_bad_Match_bad.js').then(module => module.render())
   } 
   // Handle other app routes
   else if (path.startsWith('/generate-products') || path.startsWith('/find-products')) {
